@@ -1,5 +1,5 @@
-import { FileSystemObjectTypes } from "../constants/file-system-object.enums";
-
+import { FileSystemObjectTypes } from "./file-system-object.enum";
+import { TreeNodeJson} from "./tree-node-json.model"
 export class TreeNode {
     name: string ;
     cid:  string ;
