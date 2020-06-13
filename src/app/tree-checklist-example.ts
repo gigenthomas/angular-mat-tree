@@ -9,35 +9,33 @@ import {BehaviorSubject} from 'rxjs';
  */
 export class TodoItemNode {
   children: TodoItemNode[];
-  item: string;
+  name: string;
+  cid: string ;
 }
 
 /** Flat to-do item node with expandable and level information */
 export class TodoItemFlatNode {
-  item: string;
+  name: string;
   level: number;
   expandable: boolean;
 }
+
+
+
 
 /**
  * The Json object for to-do list data.
  */
 const TREE_DATA = {
-  Groceries: {
-    'Almond Meal flour': null,
-    'Organic eggs': null,
-    'Protein Powder': null,
-    Fruits: {
+  Home: {
+    'File 1 ': null,
+    'File 2': null,
+    Folder10: {
       Apple: null,
       Berries: ['Blueberry', 'Raspberry'],
       Orange: null
     }
-  },
-  Reminders: [
-    'Cook dinner',
-    'Read the Material Design spec',
-    'Upgrade Application to Angular'
-  ]
+  }
 };
 
 /**
@@ -72,13 +70,13 @@ export class ChecklistDatabase {
     return Object.keys(obj).reduce<TodoItemNode[]>((accumulator, key) => {
       const value = obj[key];
       const node = new TodoItemNode();
-      node.item = key;
+      node.name = key;
 
       if (value != null) {
         if (typeof value === 'object') {
           node.children = this.buildFileTree(value, level + 1);
         } else {
-          node.item = value;
+          node.name = value;
         }
       }
 
@@ -89,13 +87,13 @@ export class ChecklistDatabase {
   /** Add an item to to-do list */
   insertItem(parent: TodoItemNode, name: string) {
     if (parent.children) {
-      parent.children.push({item: name} as TodoItemNode);
+      parent.children.push({name: name} as TodoItemNode);
       this.dataChange.next(this.data);
     }
   }
 
   updateItem(node: TodoItemNode, name: string) {
-    node.item = name;
+    node.name = name;
     this.dataChange.next(this.data);
   }
 }
@@ -150,17 +148,17 @@ export class TreeChecklistExample {
 
   hasChild = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.expandable;
 
-  hasNoContent = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.item === '';
+  hasNoContent = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.name === '';
 
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
    */
   transformer = (node: TodoItemNode, level: number) => {
     const existingNode = this.nestedNodeMap.get(node);
-    const flatNode = existingNode && existingNode.item === node.item
+    const flatNode = existingNode && existingNode.name === node.name
         ? existingNode
         : new TodoItemFlatNode();
-    flatNode.item = node.item;
+    flatNode.name = node.name;
     flatNode.level = level;
     flatNode.expandable = !!node.children;
     this.flatNodeMap.set(flatNode, node);

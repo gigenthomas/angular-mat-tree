@@ -1,10 +1,10 @@
 import { FileSystemObjectTypes } from "./file-system-object.enum";
 import { TreeNodeJson} from "./tree-node-json.model"
-export class TreeNode {
+export class TreeNodeBak {
     name: string ;
     cid:  string ;
     permission: string ;
-    children : Array<TreeNode> ;
+    children : Array<TreeNodeBak> ;
     type: FileSystemObjectTypes;
 
     constructor(input : TreeNodeJson){
@@ -17,7 +17,7 @@ export class TreeNode {
         else if  ( input.fileFolderType === '2'){
             this.type = FileSystemObjectTypes.File ;
         }
-        this.children = input.fileFolderList ? input.fileFolderList.map( item => new TreeNode(item)):[] ;
+        this.children = input.fileFolderList ? input.fileFolderList.map( item => new TreeNodeBak(item)):[] ;
     }
 
     isRoot(){
